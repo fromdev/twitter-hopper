@@ -1,6 +1,7 @@
 package com.fromdev.automation.twitter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,12 +14,14 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import com.fromdev.automation.TimeUtil;
 import com.fromdev.automation.WebDriverUtil;
+import com.fromdev.automation.util.Cache;
+import com.fromdev.automation.util.StringUtil;
 
 /**
  * Hello world!
  * 
  */
-public class TwitterHopper extends AbstractHopper {
+public class TwitterFollowHopper extends AbstractHopper {
 
 	private String[] searchTerms = { "@fromdev", "fromdev", "java", "jquery",
 			"javascript", "hadoop", "lucene", "web design", "html", "css",
@@ -27,10 +30,12 @@ public class TwitterHopper extends AbstractHopper {
 			"c programming", "linux", "ubuntu" };
 
 	private Set<String> alreadyScreened = new HashSet<String>();
+	private static Cache<String> usersCache = new Cache<String>();
 
 	public static void main(String[] args) {
-		TwitterHopper app = new TwitterHopper();
-
+		TwitterFollowHopper app = new TwitterFollowHopper();
+		//String[] usersArr = StringUtil.readRemoteFileAsStringArray("");
+		//usersCache.cache().addAll(Arrays.asList(usersArr));
 		app.init(args);
 		app.execute();
 
@@ -49,9 +54,10 @@ public class TwitterHopper extends AbstractHopper {
 				// driver.navigate().refresh();
 				int count = TimeUtil.getNumberBetween(2, 5);
 				for (int j = 0; j < count; j++) {
+					driver.get("https://www.twitter.com/tech_career");// + usersCache.getRandomItem());
 					// followSuggested();
 					// followOnTrends();
-					unfollow();
+					follow();
 				}
 			}
 
@@ -166,7 +172,6 @@ public class TwitterHopper extends AbstractHopper {
 	private void follow() {
 
 		try {
-			WebElement element = openAnyProfile();
 			TimeUtil.sleep(TimeUtil.SLEEP_TYPE.TYPING);
 
 			WebElement followButton = WebDriverUtil.findElement(driver,
@@ -175,7 +180,7 @@ public class TwitterHopper extends AbstractHopper {
 			System.out.println("Follow Button BG is: "
 					+ followButton.getCssValue("background-color"));
 
-			if (ensureFollowButtonAvailable(followButton) && mayFollowBack()) {
+			if (ensureFollowButtonAvailable(followButton)) {
 				// Not following it yet so follow
 				followButton.click();
 				System.out.println("followed: ");
@@ -183,22 +188,19 @@ public class TwitterHopper extends AbstractHopper {
 				if (!mayFollowBack()
 						&& ensureUnFollowButtonAvailable(followButton)) {
 					// Not sure if we are already following it skip.
-					System.out.println("unfollowed: " + element.getText());
+					System.out.println("unfollowed: " );
 					followButton.click();
 				} else {
-					System.out.println("skipped: " + element.getText());
+					System.out.println("skipped: " );
 				}
 			}
-			alreadyScreened.add(element.getText());
+			//alreadyScreened.add(element.getText());
 
 		} catch (Exception e) {
 			System.out.println("Follow failed: " + e.getMessage());
 		} finally {
 			TimeUtil.sleep(TimeUtil.SLEEP_TYPE.TYPING);
-			wait.until(
-					ExpectedConditions.elementToBeClickable(By
-							.xpath(getProfileDialogCloseButtonXPath())))
-					.click();
+			
 		}
 	}
 
@@ -490,6 +492,7 @@ public class TwitterHopper extends AbstractHopper {
 		// "/html/body/div[15]/div[2]/div/div[2]/div/div[2]/div/div/button";
 		// /html/body/div[16]/div[2]/div[2]/div[2]/div/div[2]/div/div/div/button
 		List<String> xPaths = new ArrayList();
+		xPaths.add("/html/body/div[2]/div[2]/div/div[1]/div/div[2]/div/div/div[2]/div/div/ul/li[4]/div/div/button/span[1]/span");
 		xPaths.add("//*[@id='profile_popup-body']/div[1]/div[2]/div/div/div/button");
 		xPaths.add("//*[@id='profile_popup']/div[2]/div/div[2]/div[1]/div[2]/div/div/button");
 		return xPaths;
