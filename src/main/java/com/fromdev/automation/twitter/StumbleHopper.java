@@ -9,8 +9,10 @@ import java.util.concurrent.Executors;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.MarionetteDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -30,14 +32,16 @@ import com.fromdev.automation.util.StringUtil;
 public class StumbleHopper extends AbstractHopper {
 	//private String uname = "priyanka.trivedi.trivedi@gmail.com";
 	//private String pass = "test1234";
-	private WebDriver driver =   new FirefoxDriver();
+	DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+	private WebDriver driver =   new MarionetteDriver(capabilities);
+
 	Actions actions = new Actions(driver);
 	private WebDriverWait wait = new WebDriverWait(driver, 30);
 
 	private Set<String> alreadyScreened = new HashSet<String>();
 
 	public static void main(String[] args) {
-
+		System.setProperty("webdriver.gecko.driver","./lib/geckodriver");
 		StumbleHopper app = new StumbleHopper();
 
 		app.init(args);
