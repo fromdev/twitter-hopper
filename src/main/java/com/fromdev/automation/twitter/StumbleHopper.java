@@ -112,10 +112,9 @@ public class StumbleHopper extends AbstractHopper {
 		driver.get("https://www.stumbleupon.com");
 	}
 	private void login() {
-
-		// wait.until(
-		// ExpectedConditions.elementToBeClickable(By.id(getSignInXPath())))
-		// .click();
+		 wait.until(
+		 ExpectedConditions.elementToBeClickable(By.xpath(getLoginButton())))
+		 .click();
 		TimeUtil.sleep(TimeUtil.SLEEP_TYPE.TYPING);
 		// Find the text input element by its name
 		WebElement uNameElement = wait.until(ExpectedConditions
@@ -239,12 +238,16 @@ public class StumbleHopper extends AbstractHopper {
 
 
 	private String getPasswordId() {
-		return "pass";
+		return "password-login";
 	}
 
 	private String getUsernameId() {
 		// "//*[@id="user"]"
-		return "user";
+		return "email-username";
+	}
+
+	private String getLoginButton() {
+		return "/html/body/div[1]/div[1]/div[1]/div[2]/div";
 	}
 
 	// Stumble
